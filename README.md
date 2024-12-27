@@ -7,5 +7,3 @@ This is a simple FastAPI application that follows the MVC (Model-View-Controller
 - Python 3.x
 - FastAPI
 - MongoDB
-
-## Installation
