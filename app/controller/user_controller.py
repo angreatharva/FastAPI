@@ -4,7 +4,7 @@ from bson import ObjectId
 from typing import List
 
 # Get the users collection from the db
-users_collection = db["users"]  # This is the collection you're working with
+users_collection = db["users"]
 
 # Convert ObjectId to string for JSON serialization
 def convert_objectid_to_str(obj):
@@ -12,7 +12,7 @@ def convert_objectid_to_str(obj):
         return str(obj)
     return obj
 
-# Get all users from MongoDB and return them as a list
+# Get all users from MongoDB
 async def get_all_users() -> List[User]:
     users = await users_collection.find().to_list(length=100)
     return [{**user, "_id": convert_objectid_to_str(user["_id"])} for user in users]
@@ -33,6 +33,8 @@ async def get_user_by_id(user_id: str) -> User:
 
 # Update a user by ID
 async def update_user(user_id: str, user_data: dict) -> User:
+    if "password" in user_data:
+        user_data["password"] = hash_password(user_data["password"])  # Hash the password
     await users_collection.update_one(
         {"_id": ObjectId(user_id)},
         {"$set": user_data}
